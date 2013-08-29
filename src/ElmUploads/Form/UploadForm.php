@@ -3,9 +3,13 @@
 namespace ElmUploads\Form;
 
 use Zend\Form\Form;
+use Zend\Form\Fieldset;
+use Zend\Form\Element as Element;
 
 class UploadForm extends Form
 {
+    protected $fieldsetArray;
+    
     public function __construct($name = null)
     {
         parent::__construct('Upload');
@@ -36,18 +40,31 @@ class UploadForm extends Form
             'name' => 'private',
             'attributes' => array(
                 'type'  => 'Checkbox',
+                'checked_value' => 1,
+                'unchecked_value' => 0
             ),
             'options' => array(
                 'label' => 'Private file',
             ),
         ));
         
-        $this->add(array(
-            'name' => 'submit',
-            'attributes' => array(
-                'type'  => 'submit',
-                'value' => 'Upload Now'
-            ),
-        )); 
+        $this->fieldsetArray = array(
+            'default' => array(
+		                'label',
+		                'fileupload',
+		                'private'
+               
+		        )
+		);
+    }
+    
+    public function getFieldsetArray()
+    {
+        return $this->fieldsetArray;
+    }
+    
+    public function setFieldsetArray($fieldsetArray)
+    {
+        $this->fieldsetArray = $fieldsetArray;
     }
 }

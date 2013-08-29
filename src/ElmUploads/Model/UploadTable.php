@@ -29,6 +29,7 @@ class UploadTable
         $id = (int)$upload->id;
         if ($id == 0) {
             $this->tableGateway->insert($data);
+            $id = $this->tableGateway->lastInsertValue;
         } else {
             if ($this->getUpload($id)) {
                 $this->tableGateway->update($data, array('id' => $id));
@@ -36,6 +37,9 @@ class UploadTable
                 throw new \Exception('Upload ID does not exist');
             }
         }
+        
+        return $id;
+        
     }
     
     public function fetchAll()

@@ -59,6 +59,9 @@ class UploadController extends AbstractActionController {
                     array('type' => 'actions',
                         'span' => 3,
                         'actions' => array(
+                            array('url' => '/elements/upload/file-download/' . $upload->id,
+                                'type' => 'download',
+                                'text' => 'Download'),
                             array('url' => '/elements/upload/delete/' . $upload->id,
                                 'type' => 'delete',
                                 'text' => 'Delete')
@@ -102,9 +105,12 @@ class UploadController extends AbstractActionController {
                     $exchange_data['user_id'] = $user->id;
                     $exchange_data['private'] = $request->getPost()->get('private');
                     $upload->exchangeArray($exchange_data);
-
+                    
                     $uploadTable = $this->getServiceLocator()->get('UploadTable');
-                    $uploadTable->saveUpload($upload);
+                    $uploadId = $uploadTable->saveUpload($upload);
+
+                    // 3rd party access to upload object
+                    $this->getEventManager()->trigger('ProcessUpload', $uploadId, $request->getPost());
 
                     return $this->redirect()->toRoute('uploads-cms', array(
                                 'action' => 'index'
@@ -118,6 +124,7 @@ class UploadController extends AbstractActionController {
 
     public function uploadAction() {
         $form = $this->getServiceLocator()->get('UploadForm');
+        $this->getEventManager()->trigger('UploadForm', $form, $this->getServiceLocator());
         $this->layout('layout/forms');
         $viewModel = new ViewModel(array('form' => $form));
         return $viewModel;
