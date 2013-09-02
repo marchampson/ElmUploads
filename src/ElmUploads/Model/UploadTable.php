@@ -48,6 +48,12 @@ class UploadTable
     	return $resultSet;
     }
     
+    public function fetch($select)
+    {
+    	$result = $this->tableGateway->select($select);
+    	return $result;
+    }
+    
     public function getUpload($uploadId)
     {
     	$uploadId  = (int) $uploadId;
